@@ -1,6 +1,8 @@
 const express = require("express")
 const dotenv = require("dotenv");
 const connectDB = require("./db/db");
+const { userRouter } = require("./routes/userRoute");
+const { courseRouter } = require("./routes/courseRoute");
 
 const app = express();
 
@@ -8,10 +10,11 @@ const app = express();
 // loads the env variables
 dotenv.config();
 
+connectDB()
 
-connectDB
 
-
+app.use("/api/v1/user", userRouter)
+app.use("/api/v1/course", courseRouter)
 
 
 
