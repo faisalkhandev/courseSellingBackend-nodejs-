@@ -1,26 +1,28 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
+// USER SCHEMA
 const userSchema = new Schema({
     email: {
         type: String,
-        unique: true,
-        required: true,
+        unique: [true, 'Duplicate email is not allowed'],
+        required: [true, "email is required."],
     },
     firstname: {
         type: String,
-        required: true,
+        required: [true, "firstname is required"],
     },
     lastname: {
         type: String,
-        required: true,
+        required: [true, "lastname is required."],
     },
     password: {
         type: String,
-        required: true,
+        required: [true, "password is required."],
     },
 });
 
+// COURSE SCHEMA
 const courseSchema = new Schema({
     title: {
         type: String,
@@ -34,6 +36,7 @@ const courseSchema = new Schema({
     imageurl: String,
 });
 
+// CREATOR SCHEMA
 const creatorSchema = new Schema({
     email: {
         type: String,
@@ -54,10 +57,18 @@ const creatorSchema = new Schema({
     },
 });
 
-// New: purchaseSchema with relations
+// PURCHASE SCHEMA
 const purchaseSchema = new Schema({
-    userId: {},
-    courseId: {},
+    userId: {
+        type: Schema.Types.ObjectId,
+        ref: "user",   // References the userModel
+        required: true,
+    },
+    courseId: {
+        type: Schema.Types.ObjectId,
+        ref: "course", // it References the courseModel
+        required: true,
+    },
     purchaseDate: {
         type: Date,
         default: Date.now,
