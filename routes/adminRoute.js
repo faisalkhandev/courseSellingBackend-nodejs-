@@ -4,7 +4,8 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const { z } = require("zod");
-const { adminModel } = require("../models/allModel");
+const { adminModel, courseModel } = require("../models/allModel");
+const { adminMiddleware } = require("../middlewares/adminMiddleware");
 
 dotenv.config();
 const adminRouter = Router();
@@ -17,6 +18,13 @@ const adminSchema = z.object({
     lastname: z.string().min(3, "Last name should be greater than 3 characters."),
     email: z.string().email("Email is invalid"),
     password: z.string().min(6, "Password must be at least 6 characters."),
+});
+
+const courseSchema = z.object({
+    title: z.string().min(3, "Title must be at least 3 characters"),
+    description: z.string().min(10, "Description must be at least 10 characters"),
+    price: z.number().min(1, "Price must be at least 1"),
+    imageurl: z.string().url("Image URL must be a valid URL").optional().default("https://media.istockphoto.com/id/1341046662/vector/picture-profile-icon-human-or-people-sign-and-symbol-for-template-design.jpg?s=612x612&w=0&k=20&c=A7z3OK0fElK3tFntKObma-3a7PyO8_2xxW0jtmjzT78="),
 });
 
 adminRouter.post("/signup", async (req, res) => {
@@ -115,6 +123,43 @@ adminRouter.post("/signin", async function (req, res) {
         });
     }
 });
+
+adminRouter.post("/createCourse", adminMiddleware, async function (req, res) {
+
+    const adminId = req.adminId;
+
+    const courseParsed = courseSchema.safeParse(req.body)
+
+    if (!courseParsed.success) {
+        res.status(400).json({
+            message: 'Validation Errorr',
+            errors: courseParsed.error.errors,
+        })
+    }
+
+    const { title, description, price, imageurl } = courseParsed.data;
+
+
+    const course = await courseModel.create({
+        title,
+        description,
+        price,
+        imageurl,
+        createrId: adminId
+    })
+
+    res.status(200).json({
+        message: "Course has been created.",
+        course: {
+            courseId: course._id,
+            courseTitle: course.title,
+            price: course.price
+
+        }
+    })
+
+
+})
 
 
 
