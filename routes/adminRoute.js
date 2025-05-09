@@ -160,6 +160,45 @@ adminRouter.post("/createCourse", adminMiddleware, async function (req, res) {
 
 
 })
+adminRouter.put("/createCourse", adminMiddleware, async function (req, res) {
+
+    const adminId = req.adminId;
+
+
+    const { title, description, price, imageurl, courseId } = req.body;
+
+    try {
+
+        const updatedCourse = await courseModel.findOneAndUpdate(
+            { _id: courseId, createrId: adminId },
+            { title, description, price, imageurl },
+            { new: true }
+        );
+
+        if (!updatedCourse) {
+            return res.status(404).json({ message: "Course not found or not authorized" });
+        }
+
+        res.status(200).json({
+            message: "Course has been updated.",
+            course: {
+                id: updatedCourse._id,
+                courseTitle: updatedCourse.title,
+                price: updatedCourse.price,
+                description: updatedCourse.description,
+                imageurl: updatedCourse.imageurl
+            }
+        });
+
+    }
+    catch (err) {
+        res.json({
+            message: err
+        })
+    }
+
+
+})
 
 
 
