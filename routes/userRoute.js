@@ -11,7 +11,6 @@ dotenv.config();
 
 const JWT = process.env.JWT_SECRET;
 
-console.log("jwt::", JWT)
 
 const userSchema = z.object({
     firstname: z
@@ -95,7 +94,7 @@ userRouter.post("/signin", async function (req, res) {
 
         const token = jwt.sign(
             {
-                userId: user._id,
+                id: user._id,
             },
             JWT,
             {
