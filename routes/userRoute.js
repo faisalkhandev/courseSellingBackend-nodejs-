@@ -3,9 +3,11 @@ const { userModel } = require("../models/allModel");
 const { z } = require("zod");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv")
 
 const userRouter = Router();
 
+dotenv.config();
 
 const JWT = process.env.JWT_SECRET;
 
