@@ -20,7 +20,7 @@ connectDB();
 // Prefix Routes
 app.use("/api/v1/user", userRouter)
 app.use("/api/v1/course", courseRouter)
-app.use("/api/v1/courseCreator", adminRouter)
+app.use("/api/v1/admin", adminRouter)
 
 
 //PORT

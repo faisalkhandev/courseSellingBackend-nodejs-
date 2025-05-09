@@ -1,13 +1,15 @@
-const { Router } = require("express")
+const { Router } = require("express");
+const { adminMiddleware } = require("../middlewares/adminMiddleware");
 
 
 const courseRouter = Router();
 
 
-courseRouter.get("/allcoures", async function (req, res) {
+courseRouter.get("/createCourse", adminMiddleware, async function (req, res) {
     res.json({
-        message: "allcourse"
+        message: "sir, admin token chal para."
     })
+
 })
 
 
