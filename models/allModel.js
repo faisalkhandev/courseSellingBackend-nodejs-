@@ -36,8 +36,8 @@ const courseSchema = new Schema({
     imageurl: String,
 });
 
-// CREATOR SCHEMA
-const creatorSchema = new Schema({
+// admin SCHEMA
+const adminSchema = new Schema({
     email: {
         type: String,
         unique: true,
@@ -77,12 +77,12 @@ const purchaseSchema = new Schema({
 
 const userModel = mongoose.model("user", userSchema);
 const courseModel = mongoose.model("course", courseSchema);
-const creatorModel = mongoose.model("creator", creatorSchema);
+const adminModel = mongoose.model("admin", adminSchema);
 const purchaseModel = mongoose.model("purchase", purchaseSchema);
 
 module.exports = {
     userModel,
     courseModel,
-    creatorModel,
+    adminModel,
     purchaseModel,
 };
