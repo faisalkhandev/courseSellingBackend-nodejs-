@@ -8,7 +8,7 @@ const jwt_token = process.env.JWT_SECRET
 async function userMiddleware(req, res, next) {
     try {
         const token = req.headers.authorization;
-        console.log("token::::", token)
+
 
         if (!token) {
             return res.json({
