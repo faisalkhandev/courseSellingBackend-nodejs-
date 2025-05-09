@@ -1,26 +1,55 @@
 const { Router } = require("express");
 const { userModel } = require("../models/allModel");
+const { z } = require("zod");
 
 const userRouter = Router();
+
+const JWT_SECRET = process.env.JWT_SECRET
+
+
+
+const userSchema = z.object({
+    firstname: z.string().min(3, "First name should be greater than 3 characters."),
+    lastname: z.string().min(3, "Last name should be greater than 3 characters."),
+    email: z.string().email(),
+    password: z.string().min(6, "Password must be at least 6 characters.")
+})
+
 
 
 userRouter.post("/signup", async (req, res) => {
 
 
     try {
-        const { email, firstname, lastname, password } = req.body;
 
-        if (!email || !firstname || !lastname || !password) {
-            return res.json({
-                message: "Enter the requried fields."
+        const parsed = userSchema.safeParse(req.body)
+        console.log("parsed:::", parsed)
+
+        if (!parsed.success) {
+            return res.status(400).json({
+                message: "Validation Error",
+                errors: parsed.error.errors,
+            });
+        }
+
+
+
+        const { email, firstname, lastname, password } = parsed.data;
+
+        const existingUser = await userModel.findOne({ email });
+
+        if (existingUser) {
+            return res.status(409).json({
+                message: "User already exists"
             })
         }
 
 
+
         const newUser = await userModel.create({
-            email,
             firstname,
             lastname,
+            email,
             password,
         });
 
