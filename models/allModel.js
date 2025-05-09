@@ -5,7 +5,7 @@ const { Schema } = mongoose;
 const userSchema = new Schema({
     email: {
         type: String,
-        unique: [true, 'Duplicate email is not allowed'],
+        unique: [true, "Duplicate email is not allowed"],
         required: [true, "email is required."],
     },
     firstname: {
@@ -28,15 +28,16 @@ const courseSchema = new Schema({
         type: String,
         required: true,
     },
-    description: String,
     price: {
         type: Number,
         required: true,
     },
+    description: String,
     imageurl: String,
+    createrId: mongoose.Types.ObjectId,
 });
 
-// admin SCHEMA
+//  SCHEMA
 const adminSchema = new Schema({
     email: {
         type: String,
@@ -61,7 +62,7 @@ const adminSchema = new Schema({
 const purchaseSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
-        ref: "user",   // References the userModel
+        ref: "user", // References the userModel
         required: true,
     },
     courseId: {
