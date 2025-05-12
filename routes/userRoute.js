@@ -183,17 +183,32 @@ userRouter.post("/purchase/:courseId", userMiddleware, async function (req, res)
 userRouter.get("/purchase", userMiddleware, async function (req, res) {
     const userId = req.userId;
 
-    const purchaseCourse = await courseModel.find({
-        userId
-    })
+    try {
+        // Query the purchaseModel to get all the courses purchased by the user
+        const purchases = await purchaseModel
+            .find({ userId })
+            .populate("courseId");
 
-    res.json({
-        message: `these are the courses purchased by the ${userId}`,
-        purchaseCourse
-    })
 
-})
+        if (purchases.length === 0) {
+            return res.status(404).json({
+                message: "No purchased courses found.",
+            });
+        }
 
+        // Return the purchased courses
+        res.status(200).json({
+            message: "These are the courses purchased by the user.",
+            purchasedCourses: purchases.map(p => p.courseId), // Extract only the course details
+        });
+    } catch (error) {
+        console.error("Error fetching purchased courses:", error);
+        res.status(500).json({
+            message: "Internal server error.",
+            error: error.message,
+        });
+    }
+});
 
 
 
