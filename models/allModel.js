@@ -35,9 +35,12 @@ const courseSchema = new Schema({
     description: String,
     imageurl: String,
     createrId: mongoose.Types.ObjectId,
-});
+},
+    {
+        timestamps: true
+    });
 
-//  SCHEMA
+//  admin SCHEMA
 const adminSchema = new Schema({
     email: {
         type: String,
@@ -58,7 +61,7 @@ const adminSchema = new Schema({
     },
 });
 
-// PURCHASE SCHEMA
+// purchse schema
 const purchaseSchema = new Schema({
     userId: {
         type: Schema.Types.ObjectId,
