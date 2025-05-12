@@ -1,9 +1,11 @@
 const { Router } = require("express");
-const { userModel } = require("../models/allModel");
+const { userModel, courseModel, purchaseModel } = require("../models/allModel");
 const { z } = require("zod");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv")
+const { userMiddleware } = require("../middlewares/userMiddleware");
+const { default: mongoose } = require("mongoose");
 
 const userRouter = Router();
 
@@ -118,6 +120,81 @@ userRouter.post("/signin", async function (req, res) {
         });
     }
 });
+
+
+userRouter.post("/purchase/:courseId", userMiddleware, async function (req, res) {
+
+    const userId = req.userId;
+    const { courseId } = req.params;
+
+    try {
+        // ✅ Validate courseId format first
+        if (!mongoose.isValidObjectId(courseId)) {
+            return res.status(400).json({ message: "Invalid course ID format." });
+        }
+
+        // check if the course exist
+        const courseExist = await courseModel.findById(courseId)
+        console.log("courseExist:::", courseExist)
+        if (!courseExist) {
+            return res.status(404).json({
+                message: `this course doesn't exist)`
+            })
+        }
+
+        // Check if user already purchased the course
+        const existPurchase = await purchaseModel.findOne({
+            userId,
+            courseId
+        })
+
+        if (existPurchase) {
+            return res.status(200).json({
+                message: "you have already purchase this course."
+            })
+        }
+
+        // Create purchase record
+        const newPurchase = await purchaseModel.create({
+            userId,
+            courseId
+        })
+
+        res.status(201).json({
+            message: "Course purchased successfully",
+            purchase: newPurchase,
+        });
+
+
+    } catch (error) {
+        console.error("Error during purchase:", error);  // Log the error to see the stack trace
+        res.status(500).json({
+            message: "Internal server error. Please try again later.",
+            error: error.message  // Log the actual error message
+        });
+    }
+
+
+
+})
+
+
+
+userRouter.get("/purchase", userMiddleware, async function (req, res) {
+    const userId = req.userId;
+
+    const purchaseCourse = await courseModel.find({
+        userId
+    })
+
+    res.json({
+        message: `these are the courses purchased by the ${userId}`,
+        purchaseCourse
+    })
+
+})
+
+
 
 
 module.exports = {
