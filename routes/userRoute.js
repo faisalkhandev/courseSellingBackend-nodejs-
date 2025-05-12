@@ -100,7 +100,7 @@ userRouter.post("/signin", async function (req, res) {
             },
             JWT,
             {
-                expiresIn: "1h",
+                expiresIn: "3h",
             }
         );
 
