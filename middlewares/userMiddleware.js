@@ -17,7 +17,6 @@ async function userMiddleware(req, res, next) {
         }
 
         const verifyToken = jwt.verify(token, jwt_token)
-        console.log("verifyToken:::", verifyToken)
 
         if (verifyToken) {
             req.userId = verifyToken.id
