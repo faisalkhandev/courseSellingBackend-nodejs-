@@ -211,6 +211,25 @@ userRouter.get("/purchase", userMiddleware, async function (req, res) {
 });
 
 
+userRouter.get("/allCourses", async function (req, res) {
+
+    const allCourses = await courseModel.find({})
+
+    if (!allCourses) {
+        res.status(400).json({
+            message: "no course available"
+        })
+    }
+
+    res.status(200).json({
+        message: "All courses",
+        allCourses
+    })
+
+
+})
+
+
 
 module.exports = {
     userRouter,
